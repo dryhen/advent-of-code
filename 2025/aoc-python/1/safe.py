@@ -1,4 +1,5 @@
 import logging
+import os
 # Password is locked in a safe
 # Safe has a dial with an arrow, dial goes from 0-99 in order
 
@@ -25,7 +26,7 @@ def parse_dir_and_dist(rot: str):
         except Exception as e:
             abort_gracefully(e)
     elif rot.startswith('L'):
-        direction = 0
+        direction = -1
         try:
             dist = int(rot.split('L')[1])
         except Exception as e:
@@ -35,22 +36,17 @@ def parse_dir_and_dist(rot: str):
 
     return direction, dist
 
-def calc_num(curr_num: int, direction: int, dist: int):
-    if direction:
-        updated_num = (curr_num + dist) % 99
-    else:
-        updated_num = (curr_num - dist) % 99
-
-    return updated_num
-
 def main():
     curr_num = 50
     zero_count = 0
-    with open("./input.txt", 'r') as f:
+    with open(f'{os.path.dirname(os.path.abspath(__file__))}/./input.txt', 'r') as f:
         for rot in f:
-            # 1 -> Right, 0 -> left
-            direction, dist = parse_dir_and_dist(rot=rot.upper())
-            curr_num = calc_num(curr_num=curr_num, direction=direction, dist=dist)
+            # Normalize
+            rot_norm = rot.upper().strip()
+            # 1 -> Right, -1 --> left
+            direction, dist = parse_dir_and_dist(rot=rot_norm)
+            # Initially tried with 99, but that produced results 1 off. 
+            curr_num = (curr_num + (direction * dist)) % 100
             print(curr_num)
             if curr_num == 0:
                 zero_count = zero_count + 1
