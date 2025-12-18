@@ -27,7 +27,11 @@ def test_check_bank():
 
 def test_check_bank_2():
     for data in testing_data_2:
-        assert check_bank_2(data["input"]) == data["expected_result"]
+        assert check_bank_2(data["input"], 12) == data["expected_result"]
+    # assert check_bank_2(testing_data_2[1]["input"], 12) == testing_data_2[1]["expected_result"]
+
+# My code did 173257561835730
+# Correct: 173229689350551
 
 # def test_check_bank_0():
 #     assert check_bank(testing_data[0]["input"]) == testing_data[0]["expected_result"]
