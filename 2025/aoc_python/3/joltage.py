@@ -18,32 +18,27 @@ def check_bank(bank):
 # Built with the help of reddit... https://www.reddit.com/r/adventofcode/comments/1pcxkif/2025_day_3_mega_tutorial/
 def check_bank_2(bank, battery_count):
     total_joltage = 0
-    batteries_remaining = 12
-
+    bank_length = len(bank)
+    batteries_remaining = battery_count
     offset = 0
-    for i in range(battery_count):
+    while batteries_remaining > 0:
         highest = None
         # If we start at 0, we'd want to choose a digit such that AT LEAST 11 digits are remaining on the right hand side
         # Therefore we subtract by "batteries_remaining + 1"
         # Once we have the first digit, we need to offset by that index so we can choose a digit after it such that AT LEAST 10
         # digits are remaining on the right hand side
         # (repeat until batteries_remaining is exhausted)
-        upper_lim = len(bank)-battery_count-i+1
-        for j in range(offset, upper_lim):
-            if highest == None:
-                highest = int(bank[j])
-                # If the first in this section is also the last
-                if j == upper_lim - 1:
-                    offset = j + 1
-            elif int(bank[j]) > highest:
-                highest = int(bank[j])
-                offset = j + 1 # + 1 since we don't want to include that index
-        total_joltage = total_joltage + (highest * (10 ** (battery_count - i - 1)))
-        # batteries_remaining = batteries_remaining - 1
-
+        upper_lim = bank_length-batteries_remaining+1
+        for i in range(offset, upper_lim):
+            if highest == None or int(bank[i]) > highest:
+                highest = int(bank[i])
+                offset = i + 1 # + 1 since we don't want to include that index
+        # If batteries_remaining is n, 10^(n-1) gives us the necessary amount of right hand zeroes to place our digit correctly
+        total_joltage = total_joltage + (highest * (10 ** (batteries_remaining - 1)))
+        batteries_remaining = batteries_remaining - 1
     return total_joltage
 
-# Try the above with recursion...
+# Try the above with recursion?
 # def check_bank_2(bank, batteries_remaining):
 #     if batteries_remaining == 0:
 #         return 0
@@ -62,7 +57,7 @@ def main():
             bank_totals_1.append(check_bank(jolt_list))
             # bank_totals_2.append(check_bank_2(jolt_list))
             # bank_totals_1.append(check_bank(bank))
-            bank_totals_2.append(check_bank_2(bank, 12))
+            bank_totals_2.append(check_bank_2(bank.strip(), 12))
     # Add up all of the joltage
     total_joltage = sum(bank_totals_1)
     logging.info(f'Pt1.) Total joltage: {total_joltage}')
