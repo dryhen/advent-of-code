@@ -2,3 +2,4 @@ input.*
 .venv
 .vscode
 __pycache__
+.pytest_cach
